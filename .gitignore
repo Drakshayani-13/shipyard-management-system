@@ -1,0 +1,27 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Node
+node_modules/
+dist/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log

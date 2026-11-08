@@ -1,0 +1,1211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#092846">
+    <meta name="description" content="Shipyard Vessel Management Portal - Manage vessel registrations, maintenance, movements and fleet operations.">
+    <title>Shipyard Vessel Management Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="logged-out">
+
+    <!-- =========================
+         LOGIN SCREEN
+    ========================== -->
+
+    <div class="login-screen" id="loginScreen">
+        <form class="login-card" id="loginForm">
+
+            <div class="login-logo">
+                <svg width="34" height="34" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 18l2 3h16l2-3z"/>
+                    <path d="M5 18V11h14v7"/>
+                    <path d="M9 11V6h6v5"/>
+                </svg>
+            </div>
+
+            <h1>Shipyard Portal</h1>
+            <p class="muted">Sign in to manage vessels</p>
+
+            <div class="field">
+                <label for="loginUser">Username</label>
+                <input
+                    id="loginUser"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label for="loginPass">Password</label>
+                <input
+                    id="loginPass"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <p class="login-err" id="loginErr" hidden></p>
+
+            <button
+                class="btn btn-primary btn-block"
+                id="loginBtn"
+                type="submit"
+            >
+                Sign In
+            </button>
+
+        </form>
+    </div>
+
+
+    <!-- =========================
+         SIDEBAR NAVIGATION
+    ========================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+
+            <svg width="28" height="28" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M2 18l2 3h16l2-3z"/>
+                <path d="M5 18V11h14v7"/>
+                <path d="M9 11V6h6v5"/>
+            </svg>
+
+            <span>
+                Shipyard
+                <br>
+                <small>Vessel Management</small>
+            </span>
+
+        </div>
+
+        <nav>
+
+            <div class="nav-label">Overview</div>
+
+            <a href="#dashboard" data-view="dashboard">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="9"/>
+                    <rect x="14" y="3" width="7" height="5"/>
+                    <rect x="14" y="12" width="7" height="9"/>
+                    <rect x="3" y="16" width="7" height="5"/>
+                </svg>
+                Dashboard
+            </a>
+
+
+            <div class="nav-label">Vessels</div>
+
+            <a href="#vessels" data-view="vessels">
+                <svg viewBox="0 0 24 24">
+                    <path d="M2 18l2 3h16l2-3z"/>
+                    <path d="M5 18V11h14v7"/>
+                    <path d="M9 11V6h6v5"/>
+                </svg>
+                Manage Vessels
+            </a>
+
+            <a href="#register" data-view="register" class="w">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 8v8M8 12h8"/>
+                </svg>
+                Register Vessel
+            </a>
+
+
+            <div class="nav-label">Operations</div>
+
+            <a href="#maintenance" data-view="maintenance">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>
+                </svg>
+                Maintenance
+            </a>
+
+            <a href="#movements" data-view="movements">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 12h16M14 6l6 6-6 6"/>
+                </svg>
+                Vessel Movement
+            </a>
+
+
+            <div class="nav-label">Insights</div>
+
+            <a href="#reports" data-view="reports">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+                </svg>
+                Reports
+            </a>
+
+        </nav>
+
+        <div class="sidebar-foot">
+            <span id="userName">-</span>
+            <small id="userRole"></small>
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN APPLICATION
+    ========================== -->
+
+    <div class="main">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                id="menuBtn"
+                aria-label="Menu"
+            >
+                &#9776;
+            </button>
+
+            <h1 id="pageTitle">Dashboard</h1>
+
+            <div class="spacer"></div>
+
+            <span class="user-chip" id="userChip"></span>
+
+            <button
+                class="btn btn-secondary btn-sm"
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </header>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
+        <main class="content">
+
+
+            <!-- =========================
+                 DASHBOARD
+            ========================== -->
+
+            <section id="view-dashboard" class="view">
+
+                <div class="hero hero-dashboard">
+
+                    <div>
+
+                        <span class="hero-kicker">
+                            MARITIME OPERATIONS · CONTROL CENTER
+                        </span>
+
+                        <h2>Fleet Overview</h2>
+
+                        <p>
+                            A live snapshot of every vessel in the yard
+                        </p>
+
+                        <div class="hero-pills">
+                            <span>Vessel Registry</span>
+                            <span>Maintenance</span>
+                            <span>Berth Movements</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FLEET STATISTICS -->
+
+                <div class="stats">
+
+                    <div class="stat clickable"
+                         data-status=""
+                         title="View all vessels">
+
+                        <span class="lbl">Total Vessels</span>
+                        <span class="num" id="sTotal">-</span>
+
+                    </div>
+
+
+                    <div class="stat s-service clickable"
+                         data-status="In Service"
+                         title="View In Service vessels">
+
+                        <span class="lbl">Active (In Service)</span>
+                        <span class="num" id="sService">-</span>
+
+                    </div>
+
+
+                    <div class="stat s-maint clickable"
+                         data-status="Under Maintenance"
+                         title="View Under Maintenance vessels">
+
+                        <span class="lbl">Under Maintenance</span>
+                        <span class="num" id="sMaint">-</span>
+
+                    </div>
+
+
+                    <div class="stat s-docked clickable"
+                         data-status="Docked"
+                         title="View Docked vessels">
+
+                        <span class="lbl">Docked</span>
+                        <span class="num" id="sDocked">-</span>
+
+                    </div>
+
+
+                    <div class="stat s-ready clickable"
+                         data-status="Ready"
+                         title="View Ready vessels">
+
+                        <span class="lbl">Ready</span>
+                        <span class="num" id="sReady">-</span>
+
+                    </div>
+
+
+                    <div class="stat s-inactive clickable"
+                         data-status="Inactive"
+                         title="View Inactive vessels">
+
+                        <span class="lbl">Inactive</span>
+                        <span class="num" id="sInactive">-</span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SHIPYARD OPERATIONS -->
+
+                <section class="operations-section">
+
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="eyebrow">
+                                SHIPYARD WORKFLOW
+                            </span>
+
+                            <h2>Operations at a glance</h2>
+
+                            <p>
+                                Explore the key activities managed through this portal.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="operations-grid">
+
+
+                        <!-- VESSEL MANAGEMENT -->
+
+                        <a class="operation-card" href="#vessels">
+
+                            <img
+                                src="img/vessel-fleet.jpg"
+                                alt="Cargo and container vessel fleet"
+                                loading="lazy"
+                            >
+
+                            <span class="operation-shade"></span>
+
+                            <span class="operation-copy">
+
+                                <small>01 · FLEET</small>
+
+                                <strong>Vessel Management</strong>
+
+                                <em>
+                                    Registry, identity and status
+                                    <b>↗</b>
+                                </em>
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- MAINTENANCE -->
+
+                        <a class="operation-card" href="#maintenance">
+
+                            <img
+                                src="img/ship-repair.jpg"
+                                alt="Ship undergoing maintenance in dry dock"
+                                loading="lazy"
+                            >
+
+                            <span class="operation-shade"></span>
+
+                            <span class="operation-copy">
+
+                                <small>02 · ENGINEERING</small>
+
+                                <strong>Maintenance Tracking</strong>
+
+                                <em>
+                                    Repairs, inspections and refits
+                                    <b>↗</b>
+                                </em>
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- VESSEL MOVEMENTS -->
+
+                        <a class="operation-card" href="#movements">
+
+                            <img
+                                src="img/port-movement.jpg"
+                                alt="Vessel entering a commercial harbour"
+                                loading="lazy"
+                            >
+
+                            <span class="operation-shade"></span>
+
+                            <span class="operation-copy">
+
+                                <small>03 · BERTHS</small>
+
+                                <strong>Vessel Movements</strong>
+
+                                <em>
+                                    Arrivals, departures and berths
+                                    <b>↗</b>
+                                </em>
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- REPORTS AND MONITORING -->
+
+                        <a class="operation-card" href="#reports">
+
+                            <img
+                                src="img/control-room.jpg"
+                                alt="Maritime operations control room"
+                                loading="lazy"
+                            >
+
+                            <span class="operation-shade"></span>
+
+                            <span class="operation-copy">
+
+                                <small>04 · INSIGHTS</small>
+
+                                <strong>Fleet Monitoring</strong>
+
+                                <em>
+                                    Fleet overview and reports
+                                    <b>↗</b>
+                                </em>
+
+                            </span>
+
+                        </a>
+
+
+                    </div>
+
+
+                    <p class="image-credit">
+                        Illustrative maritime photography used for this demonstration portal.
+                    </p>
+
+                </section>
+
+
+                <!-- DASHBOARD CHARTS -->
+
+                <div class="two-col">
+
+                    <div class="card">
+                        <h2>Vessel Status</h2>
+                        <div id="dashStatusBars"></div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Maintenance Overview</h2>
+                        <div id="dashMaintBars"></div>
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT REGISTRATIONS -->
+
+                <div class="card">
+
+                    <div class="card-head">
+
+                        <h2>Recent Registrations</h2>
+
+                        <a href="#vessels" class="link">
+                            View all &rarr;
+                        </a>
+
+                    </div>
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Vessel ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Registered</th>
+                                    <th>Status</th>
+                                    <th>Berth</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT MOVEMENTS -->
+
+                <div class="card">
+
+                    <div class="card-head">
+
+                        <h2>Recent Movements</h2>
+
+                        <a href="#movements" class="link">
+                            View all &rarr;
+                        </a>
+
+                    </div>
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Vessel</th>
+                                    <th>Movement</th>
+                                    <th>Berth</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentMoves" class="go-moves"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 MANAGE VESSELS
+            ========================== -->
+
+            <section id="view-vessels" class="view">
+
+                <div class="hero hero-vessels">
+
+                    <div>
+                        <h2>Vessel Registry</h2>
+                        <p>Search, filter and manage the whole fleet</p>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="toolbar">
+
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="Search by name or ID"
+                        >
+
+                        <select id="filterType">
+                            <option value="">All types</option>
+                        </select>
+
+                        <select id="filterStatus">
+                            <option value="">All statuses</option>
+                        </select>
+
+                        <button class="btn btn-secondary" id="clearFilters">
+                            Clear
+                        </button>
+
+                        <button class="btn btn-secondary" id="exportBtn">
+                            Export CSV
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Vessel ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Registered</th>
+                                    <th>Status</th>
+                                    <th>Berth</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="shipTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                    <p id="emptyMsg" class="muted empty" hidden>
+                        No vessels found.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 REGISTER / EDIT VESSEL
+            ========================== -->
+
+            <section id="view-register" class="view">
+
+                <div class="hero hero-register">
+
+                    <div>
+                        <h2 id="heroRegTitle">Register a Vessel</h2>
+                        <p>Add a new vessel to the yard registry</p>
+                    </div>
+
+                </div>
+
+
+                <div class="card form-card">
+
+                    <h2 id="formTitle">Register a Vessel</h2>
+
+                    <form id="shipForm" novalidate>
+
+                        <div class="form-grid">
+
+
+                            <div class="field">
+
+                                <label for="shipName">
+                                    Vessel Name *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="shipName"
+                                    placeholder="e.g. Ocean Star"
+                                >
+
+                                <span class="err">Required</span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="shipId">
+                                    Vessel ID *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="shipId"
+                                    placeholder="e.g. SH1001"
+                                >
+
+                                <span class="err">Required</span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="shipType">
+                                    Vessel Type *
+                                </label>
+
+                                <select id="shipType">
+                                    <option value="">Select type</option>
+                                </select>
+
+                                <span class="err">Required</span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="regDate">
+                                    Registration Date *
+                                </label>
+
+                                <input type="date" id="regDate">
+
+                                <span class="err">Required</span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="shipStatus">
+                                    Status *
+                                </label>
+
+                                <select id="shipStatus">
+                                    <option value="">Select status</option>
+                                </select>
+
+                                <span class="err">Required</span>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="berth">
+                                    Berth / Dock Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="berth"
+                                    placeholder="e.g. B-12"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                id="submitBtn"
+                            >
+                                Register Vessel
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                id="cancelBtn"
+                                hidden
+                            >
+                                Cancel Edit
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 MAINTENANCE
+            ========================== -->
+
+            <section id="view-maintenance" class="view">
+
+                <div class="hero hero-maintenance">
+
+                    <div>
+                        <h2>Maintenance Docks</h2>
+                        <p>Track repairs, inspections and refits</p>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="toolbar">
+
+                        <select id="mFilterShip">
+                            <option value="">All vessels</option>
+                        </select>
+
+                        <select id="mFilterStatus">
+                            <option value="">All statuses</option>
+                        </select>
+
+                        <div class="spacer"></div>
+
+                        <button
+                            class="btn btn-primary w"
+                            id="mNewBtn"
+                        >
+                            + New Maintenance Record
+                        </button>
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Vessel</th>
+                                    <th>Description</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="maintBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <p id="mEmpty" class="muted empty" hidden>
+                        No maintenance records found.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 VESSEL MOVEMENTS
+            ========================== -->
+
+            <section id="view-movements" class="view">
+
+                <div class="hero hero-movements">
+
+                    <div>
+                        <h2>Berths &amp; Movements</h2>
+                        <p>Record vessel arrivals and departures</p>
+                    </div>
+
+                </div>
+
+
+                <!-- RECORD MOVEMENT -->
+
+                <div class="card form-card w">
+
+                    <h2>Record Movement</h2>
+
+                    <form id="moveForm" novalidate>
+
+                        <div class="form-grid">
+
+
+                            <div class="field">
+
+                                <label for="mvShip">
+                                    Vessel *
+                                </label>
+
+                                <select id="mvShip">
+                                    <option value="">Select vessel</option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="mvType">
+                                    Movement *
+                                </label>
+
+                                <select id="mvType">
+                                    <option>Arrival</option>
+                                    <option>Departure</option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="mvDate">
+                                    Date *
+                                </label>
+
+                                <input type="date" id="mvDate">
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label for="mvBerth" id="mvBerthLbl">
+                                    Berth *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="mvBerth"
+                                    placeholder="e.g. B-04"
+                                >
+
+                            </div>
+
+
+                            <div class="field full">
+
+                                <label for="mvNotes">
+                                    Notes
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="mvNotes"
+                                    maxlength="500"
+                                    placeholder="Optional"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                class="btn btn-primary"
+                                type="submit"
+                                id="mvBtn"
+                            >
+                                Record Movement
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- MOVEMENT HISTORY -->
+
+                <div class="card">
+
+                    <div class="toolbar">
+
+                        <h2 class="inline">Movement History</h2>
+
+                        <div class="spacer"></div>
+
+                        <select id="mvFilterShip">
+                            <option value="">All vessels</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Vessel</th>
+                                    <th>Movement</th>
+                                    <th>Berth</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="moveBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <p id="mvEmpty" class="muted empty" hidden>
+                        No movements recorded.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 REPORTS
+            ========================== -->
+
+            <section id="view-reports" class="view">
+
+                <div class="hero hero-reports">
+
+                    <div>
+                        <h2>Reports &amp; Insights</h2>
+                        <p>Fleet statistics and data export</p>
+                    </div>
+
+                </div>
+
+
+                <div class="two-col">
+
+                    <div class="card">
+
+                        <h2>Vessels by Status</h2>
+
+                        <div id="statusBars"></div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <h2>Vessels by Type</h2>
+
+                        <div id="typeBars"></div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>Export</h2>
+
+                    <p class="muted">
+                        Download all vessel records as a spreadsheet-compatible CSV file.
+                    </p>
+
+                    <button
+                        class="btn btn-primary"
+                        id="exportAllBtn"
+                    >
+                        Download Full Report (CSV)
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         VESSEL DETAILS DIALOG
+    ========================== -->
+
+    <dialog id="detailDialog">
+
+        <div class="dialog-head">
+
+            <h2 id="dName"></h2>
+
+            <button
+                class="close"
+                id="dClose"
+                aria-label="Close"
+            >
+                &times;
+            </button>
+
+        </div>
+
+        <dl class="details" id="dBody"></dl>
+
+        <div class="actions w">
+
+            <button
+                class="btn btn-primary"
+                id="dEdit"
+            >
+                Edit Vessel
+            </button>
+
+        </div>
+
+    </dialog>
+
+
+    <!-- =========================
+         MAINTENANCE DIALOG
+    ========================== -->
+
+    <dialog id="maintDialog">
+
+        <div class="dialog-head">
+
+            <h2 id="mdTitle">New Maintenance Record</h2>
+
+            <button
+                class="close"
+                id="mdClose"
+                aria-label="Close"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <form id="maintForm" novalidate>
+
+            <div class="form-grid one">
+
+
+                <div class="field">
+
+                    <label for="mdShip">Vessel *</label>
+
+                    <select id="mdShip"></select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="mdDesc">Description *</label>
+
+                    <textarea
+                        id="mdDesc"
+                        rows="3"
+                        maxlength="1000"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="mdStart">Start Date *</label>
+
+                    <input type="date" id="mdStart">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="mdEnd">End Date</label>
+
+                    <input type="date" id="mdEnd">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="mdStatus">Status *</label>
+
+                    <select id="mdStatus"></select>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                    id="mdSave"
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- =========================
+         TOAST NOTIFICATIONS
+    ========================== -->
+
+    <div
+        id="toasts"
+        class="toasts"
+        aria-live="polite"
+    ></div>
+
+
+    <!-- =========================
+         APPLICATION SCRIPTS
+    ========================== -->
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
