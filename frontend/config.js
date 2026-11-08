@@ -3,7 +3,7 @@
 const LOCAL_API = "http://127.0.0.1:5001";
 
 // Replace this with your actual Render backend URL after deployment.
-const PRODUCTION_API = "https://YOUR-RENDER-SERVICE.onrender.com";
+const PRODUCTION_API = "https://ship-portal-api.onrender.com";
 
 const isPortal = location.pathname.startsWith("/portal");
 const isLocal = ["localhost", "127.0.0.1"].includes(location.hostname);
