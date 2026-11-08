@@ -5,6 +5,7 @@ services:
   - type: web
     name: ship-portal-api
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
